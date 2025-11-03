@@ -1,8 +1,4 @@
-"""
-Redis implementation of MemoryStore interface.
-
-Wraps the existing Redis client to provide MemoryStore interface.
-"""
+"""Redis-backed MemoryStore implementation used in production."""
 
 import json
 import logging

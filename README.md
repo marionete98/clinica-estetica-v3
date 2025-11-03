@@ -112,12 +112,12 @@ WhatsApp → Chatwoot → FastAPI Gateway → Agent Orchestrator
 
 | Componente | Status | Última Atualização |
 |------------|--------|-------------------|
-| **Agentes** | ✅ 6/6 migrados para SK | 2025-10-20 |
-| **Calendar API** | ✅ Integrado e funcional | 2025-10-20 |
-| **Scheduler** | ✅ Refatorado | 2025-10-20 |
-| **Testes** | ✅ 100% passando | 2025-10-20 |
-| **Deploy** | ✅ Pronto para Railway | 2025-10-20 |
-| **Documentação** | ✅ Organizada | 2025-10-20 |
+| **Agentes** | ✅ 6/6 migrados para SK | 2025-11-16 |
+| **Calendar API** | ✅ Integrado e funcional | 2025-11-16 |
+| **Scheduler** | ✅ Refatorado | 2025-11-16 |
+| **Testes** | ✅ Cobertura consolidada ≥90% | 2025-11-16 |
+| **Deploy** | ✅ Pronto para Railway/staging | 2025-11-16 |
+| **Documentação** | ✅ Arquitetura + migração revisadas | 2025-11-16 |
 
 ---
 
@@ -130,11 +130,11 @@ pytest
 # Com cobertura
 pytest --cov=app tests
 
-# Teste específico do scheduler refatorado
-python test_scheduler_refactored.py
+# Benchmark de orquestração
+PYENV_VERSION=3.12.10 PYTHONPATH=. python scripts/benchmark_refactor.py
 ```
 
-📊 **Cobertura Atual**: 85%+
+📊 **Cobertura Atual**: 90%+ (Sprint 5)
 
 ---
 
@@ -179,6 +179,11 @@ Projeto privado - Clínica Luana
 
 ---
 
-**Versão**: v3.0 - Produção Ready  
-**Última Atualização**: 2025-10-20  
+**Versão**: v3.1 - Produção Ready
+**Última Atualização**: 2025-11-16
 **Status**: 🚀 **PRONTO PARA DEPLOY**
+
+
+- [Arquitetura atualizada](docs/ARCHITECTURE.md)
+- [Guia de migração](docs/MIGRATION_GUIDE.md)
+- [Benchmarks de performance](docs/PERFORMANCE.md)

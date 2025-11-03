@@ -1,27 +1,4 @@
-"""
-Model Client Factory for AutoGen agents with Semantic Kernel integration.
-
-This module provides a centralized factory for creating LLM model clients,
-eliminating code duplication across all agents.
-
-Supports:
-- xAI Grok via OpenAI-compatible API
-- Google Gemini via GoogleAI connector
-- OpenAI (fallback)
-
-Usage:
-    from agents.model_client_factory import create_model_client
-    from config.settings import settings
-    
-    llm_config = settings.get_llm_config()
-    model_client = create_model_client(llm_config)
-    
-    agent = AssistantAgent(
-        name="my_agent",
-        model_client=model_client,
-        system_message="..."
-    )
-"""
+"""Model client factory for AutoGen agents using Semantic Kernel adapters."""
 
 import logging
 from typing import Dict, Any

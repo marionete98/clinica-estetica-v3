@@ -128,18 +128,14 @@ Comprehensive testing of the AutoGen agent system has been completed following t
 
 **These tests validate our implemented changes:**
 
-1. **test_orchestrator_cleanup.py** - 4/4 passed (100%) ✅
+1. **test_orchestrator_cleanup.py** - 3/3 passed (100%) ✅
    - ✅ test_orchestrator_cleanup
    - ✅ test_orchestrator_cleanup_handles_errors
-   - ✅ test_global_cleanup_orchestrator
    - ✅ test_agent_cleanup_methods
 
-2. **test_main_shutdown.py** - 5/5 passed (100%) ✅
-   - ✅ test_lifespan_shutdown_calls_cleanup
-   - ✅ test_lifespan_shutdown_handles_cleanup_errors
-   - ✅ test_cleanup_orchestrator_imported
-   - ✅ test_scheduler_shutdown_on_lifespan_end
-   - ✅ test_chatwoot_client_closed_on_shutdown
+2. **test_main_shutdown.py** - 2/2 passed (100%) ✅
+   - ✅ test_lifespan_shutdown_runs_without_agent_cleanup
+   - ✅ test_lifespan_shutdown_logs_scheduler_errors
 
 3. **test_guardrails.py** - 21/21 passed (100%) ✅
    - All guardrail tests passing (validates our error handling patterns)
@@ -289,18 +285,17 @@ Comprehensive testing of the AutoGen agent system has been completed following t
 - agents/escalation.py - try-finally in `prepare_escalation`
 
 **Verification:**
-- ✅ All cleanup tests passing (4/4)
-- ✅ Shutdown tests passing (5/5)
+- ✅ All cleanup tests passing (3/3)
+- ✅ Shutdown tests passing (2/2)
 - ✅ No resource leak warnings
 
 **Test Evidence:**
 ```
 ✅ test_orchestrator_cleanup
 ✅ test_orchestrator_cleanup_handles_errors
-✅ test_global_cleanup_orchestrator
 ✅ test_agent_cleanup_methods
-✅ test_lifespan_shutdown_calls_cleanup
-✅ test_lifespan_shutdown_handles_cleanup_errors
+✅ test_lifespan_shutdown_runs_without_agent_cleanup
+✅ test_lifespan_shutdown_logs_scheduler_errors
 ```
 
 ### 5.4 Tool Documentation Enhancement ✅

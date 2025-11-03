@@ -11,12 +11,13 @@ from uuid import UUID
 
 from config.settings import settings
 from tools.calendar_api_client import get_calendar_client, CalendarAPIError
-from models.repository import (
+from models.repositories.appointments import (
     get_appointment_by_id,
-    get_service_by_id,
+    reschedule_appointment as repo_reschedule_appointment,
     update_appointment_status,
-    reschedule_appointment as repo_reschedule_appointment
 )
+from models.repositories.contacts import get_contact_by_id
+from models.repositories.services import get_service_by_id
 
 logger = logging.getLogger(__name__)
 
@@ -583,7 +584,6 @@ async def check_cancellation_policy(
             raise ValueError(f"Service {appointment.service_id} not found")
         
         # Get contact to check no-show history
-        from models.repository import get_contact_by_id
         contact = await get_contact_by_id(appointment.contact_id)
         no_show_count = contact.no_show_count if contact else 0
         

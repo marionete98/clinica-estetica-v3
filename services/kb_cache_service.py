@@ -12,9 +12,9 @@ import numpy as np
 
 from config.redis_client import RedisClient
 from config.supabase_client import SupabaseClient
-from models.repository import (
+from models.repositories.knowledge_base import (
+    get_message_template as repo_get_message_template,
     search_knowledge_base as repo_search_knowledge_base,
-    get_message_template as repo_get_message_template
 )
 from services.embedding_service import EmbeddingService
 

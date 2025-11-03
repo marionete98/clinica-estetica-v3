@@ -10,8 +10,8 @@ from datetime import datetime
 import asyncio
 
 from config.chatwoot_client import chatwoot_client
-from models.repository import create_log_entry
-from utils.circuit_breakers import chatwoot_breaker, CircuitBreakerError
+from models.repositories.logs import create_log_entry
+from utils.circuit_breakers import CircuitBreakerError, chatwoot_breaker
 
 logger = logging.getLogger(__name__)
 

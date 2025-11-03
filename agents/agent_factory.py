@@ -1,6 +1,4 @@
-"""
-Factory for creating agent instances with consistent dependency injection.
-"""
+"""Factory helpers for constructing agent instances with shared dependencies."""
 
 from __future__ import annotations
 

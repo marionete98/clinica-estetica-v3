@@ -245,11 +245,13 @@ python scripts/test_chatwoot_integration.py http://localhost:8000
 
 ## Deprecated Scripts
 
-### seed_data.py ⚠️
+### seed_data.py ❌ (removido)
 
-**Status:** DEPRECATED - Use seed_data_v2.py instead
+**Status:** REMOVIDO NA SPRINT 5 - Utilize `seed_data_v2.py`
 
-Original seed script, replaced by v2 which is adapted for the current schema.
+O script original foi arquivado para evitar divergências com o esquema atual.
+Todos os ambientes devem usar `python scripts/seed_data_v2.py` para popular
+dados iniciais.
 
 ## Prerequisites
 

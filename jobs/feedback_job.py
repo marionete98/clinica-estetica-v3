@@ -6,12 +6,13 @@ Requirements: 17.1, 17.2, 17.3, 17.5
 
 import logging
 from datetime import datetime, timedelta
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 from services.container import get_supabase_client
 from config.settings import settings
 from models.database import Appointment
-from models.repository import get_service_by_id, get_contact_by_id
+from models.repositories import get_contact_by_id, get_service_by_id
+from models.repositories.logs import create_log_entry
 from agents.followup import create_followup_agent
 
 logger = logging.getLogger(__name__)
@@ -120,7 +121,6 @@ async def send_feedback_requests() -> Dict[str, Any]:
                 
                 if result['success']:
                     # Log feedback sent to avoid duplicates
-                    from models.repository import create_log_entry
                     await create_log_entry(
                         conversation_id=appointment.conversation_id,
                         contact_id=appointment.contact_id,

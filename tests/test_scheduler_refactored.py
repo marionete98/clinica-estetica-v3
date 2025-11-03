@@ -8,7 +8,10 @@ from datetime import datetime, timedelta
 async def test_scheduler_refactored():
     """Testa scheduler refatorado com Calendar API"""
     from tools.scheduler_tools import list_available_slots, create_booking
-    from models.repository import get_contact_by_phone, create_or_update_contact
+    from models.repositories.contacts import (
+        create_or_update_contact,
+        get_contact_by_phone,
+    )
     
     print("=" * 60)
     print("TESTE: Scheduler Refatorado com Calendar API")

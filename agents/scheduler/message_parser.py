@@ -1,12 +1,13 @@
+"""Parsers utilitários para respostas do scheduler."""
+
 from __future__ import annotations
 
 import json
 import logging
 from typing import Any, Dict, Optional
 
-from utils.response_parser import parse_messages_from_run_result
-
 from agents.scheduler.slot_finder import format_slots_response
+from utils.response_parser import parse_messages_from_run_result
 
 logger = logging.getLogger(__name__)
 

@@ -5,12 +5,13 @@ Requirements: 1.4, 6.1
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.semantic_kernel import SKChatCompletionAdapter
 
 from agents.model_client_factory import create_model_client
 from config.llm_config import LLMConfig
+from models.types import SupervisorClassification
 from utils.response_parser import parse_messages_from_run_result
 from utils.error_handlers import (
     ErrorType,
@@ -141,7 +142,7 @@ class SupervisorAgent:
         message: str,
         conversation_id: str,
         context: Optional[List[Dict[str, str]]] = None
-    ) -> Dict[str, Any]:
+    ) -> SupervisorClassification:
         """
         Classify user intent and determine routing.
 
@@ -151,7 +152,7 @@ class SupervisorAgent:
             context: Optional conversation history
 
         Returns:
-            Dictionary with classification result:
+            SupervisorClassification dictionary with classification result:
             {
                 "intent": "schedule",
                 "agent": "scheduler",

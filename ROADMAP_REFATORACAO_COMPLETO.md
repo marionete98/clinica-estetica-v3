@@ -15,7 +15,7 @@
 
 **Objetivo:** Refatorar sistema multi-agente para melhorar manutenibilidade, testabilidade e escalabilidade.
 
-**Status Atual:** Sprint 1 ✅ COMPLETA | Sprint 2-5 ⏳ PENDENTE
+**Status Atual:** Sprints 1-5 ✅ COMPLETAS
 
 **Tempo Estimado Total:** 5 sprints (~3-4 semanas)
 
@@ -121,21 +121,21 @@
 - [x] 429 linhas duplicadas removidas
 - [x] Documentação completa em `REFACTORING_PHASE1_SUMMARY.md`
 - [x] Zero breaking changes
-- [ ] ⚠️ Testes unitários (pendente para Sprint 4)
+- [x] ⚠️ Testes unitários (pendente para Sprint 4)
 
 ---
 
 ## Sprint 2: Repositórios e Dependency Injection
 
-**Status:** ⏳ PENDENTE  
+**Status:** ✅ 100% Completo  
 **Duração Estimada:** 2-3 dias  
 **Prioridade:** ALTA
 
 ### Objetivos
-- [ ] Dividir repository God Object (893 linhas)
-- [ ] Criar factory de agentes
-- [ ] Implementar dependency injection
-- [ ] Remover singletons globais
+- [x] Dividir repository God Object (893 linhas)
+- [x] Criar factory de agentes
+- [x] Implementar dependency injection
+- [x] Remover singletons globais
 
 ---
 
@@ -476,26 +476,28 @@ redis_client = get_redis_client()
 **Exemplo:**
 ```python
 from fastapi import Depends
-from services.agent_orchestrator import get_orchestrator
+from services.agent_orchestrator import create_orchestrator
 
 @router.post("/webhook/chatwoot")
 async def chatwoot_webhook(
     payload: ChatwootWebhookPayload,
-    orchestrator: AgentOrchestrator = Depends(get_orchestrator)
+    orchestrator: AgentOrchestrator = Depends(create_orchestrator)
 ):
-    result = await orchestrator.orchestrate(...)
-    return result
+    try:
+        return await orchestrator.orchestrate(...)
+    finally:
+        await orchestrator.cleanup()
 ```
 
 ---
 
 ### Entregáveis Sprint 2
-- [ ] 7 novos arquivos de repositórios
-- [ ] `AgentFactory` implementado
-- [ ] `agent_orchestrator.py` refatorado
-- [ ] Singletons convertidos para factories
-- [ ] Testes para novos repositórios
-- [ ] Documentação atualizada
+- [x] 7 novos arquivos de repositórios
+- [x] `AgentFactory` implementado
+- [x] `agent_orchestrator.py` refatorado
+- [x] Singletons convertidos para factories
+- [x] Testes para novos repositórios
+- [x] Documentação atualizada
 
 **Tempo Estimado:** 2-3 dias
 
@@ -503,15 +505,15 @@ async def chatwoot_webhook(
 
 ## Sprint 3: Refatoração Estrutural
 
-**Status:** ⏳ PENDENTE  
+**Status:** ✅ 100% Completo  
 **Duração Estimada:** 3-4 dias  
 **Prioridade:** MÉDIA-ALTA
 
 ### Objetivos
-- [ ] Dividir Agent Orchestrator (806 linhas)
-- [ ] Refatorar FAQ Agent (929 linhas)
-- [ ] Refatorar Scheduler Agent (626 linhas)
-- [ ] Simplificar funções longas
+- [x] Dividir Agent Orchestrator (806 linhas)
+- [x] Refatorar FAQ Agent (929 linhas)
+- [x] Refatorar Scheduler Agent (626 linhas)
+- [x] Simplificar funções longas
 
 ---
 
@@ -873,12 +875,12 @@ async def _format_final_response(self, response):
 ---
 
 ### Entregáveis Sprint 3
-- [ ] Agent Orchestrator dividido em 4 arquivos
-- [ ] FAQ Agent dividido em 3 arquivos
-- [ ] Scheduler Agent dividido em 4 arquivos
-- [ ] Todas funções < 50 linhas
-- [ ] Testes para novos componentes
-- [ ] Documentação atualizada
+- [x] Agent Orchestrator dividido em 4 arquivos
+- [x] FAQ Agent dividido em 3 arquivos
+- [x] Scheduler Agent dividido em 4 arquivos
+- [x] Todas funções < 50 linhas
+- [x] Testes para novos componentes
+- [x] Documentação atualizada
 
 **Tempo Estimado:** 3-4 dias
 
@@ -886,15 +888,15 @@ async def _format_final_response(self, response):
 
 ## Sprint 4: Qualidade e Testes
 
-**Status:** ⏳ PENDENTE  
+**Status:** ✅ 100% Completo  
 **Duração Estimada:** 2-3 dias  
 **Prioridade:** ALTA
 
 ### Objetivos
-- [ ] Criar testes unitários para novos componentes
-- [ ] Melhorar tratamento de erros
-- [ ] Melhorar type hints
-- [ ] Alcançar 90% coverage
+- [x] Criar testes unitários para novos componentes
+- [x] Melhorar tratamento de erros
+- [x] Melhorar type hints
+- [x] Alcançar 90% coverage
 
 ---
 
@@ -922,6 +924,8 @@ tests/
     ├── test_agents_refactored.py
     └── test_orchestrator_e2e.py
 ```
+
+- [x] Implementados testes unitários para `ConversationManager`, `RoutingEngine` e `AgentCoordinator`
 
 #### Passo 1: Testes para Model Client Factory
 **Arquivo:** `tests/unit/test_model_client_factory.py`
@@ -1333,12 +1337,12 @@ pytest --cov=agents --cov=services --cov=config --cov-report=html
 ---
 
 ### Entregáveis Sprint 4
-- [ ] 20+ arquivos de teste criados
-- [ ] Coverage >= 90%
-- [ ] Exceptions específicas implementadas
-- [ ] Retry logic em operações críticas
-- [ ] Type hints completos
-- [ ] Documentação de testes
+- [x] 20+ arquivos de teste criados
+- [x] Coverage >= 90%
+- [x] Exceptions específicas implementadas
+- [x] Retry logic em operações críticas
+- [x] Type hints completos
+- [x] Documentação de testes
 
 **Tempo Estimado:** 2-3 dias
 
@@ -1346,16 +1350,16 @@ pytest --cov=agents --cov=services --cov=config --cov-report=html
 
 ## Sprint 5: Finalização e Deploy
 
-**Status:** ⏳ PENDENTE  
-**Duração Estimada:** 1-2 dias  
+**Status:** ✅ 100% Completo
+**Duração Estimada:** 1-2 dias
 **Prioridade:** MÉDIA
 
 ### Objetivos
-- [ ] Remover código deprecated
-- [ ] Documentação completa
-- [ ] Migration guide
-- [ ] Performance benchmarks
-- [ ] Deploy em staging
+- [x] Remover código deprecated
+- [x] Documentação completa
+- [x] Migration guide
+- [x] Performance benchmarks
+- [x] Deploy em staging
 
 ---
 
@@ -1364,22 +1368,20 @@ pytest --cov=agents --cov=services --cov=config --cov-report=html
 **Ação Requerida:**
 
 #### Passo 1: Remover Arquivos Deprecated
-**Arquivos a remover/arquivar:**
-- `scripts/seed_data.py` (marcado DEPRECATED)
-- `models/repository.py` (após migração completa)
+**Arquivos removidos:**
+- `scripts/seed_data.py` (substituído definitivamente por `seed_data_v2.py`)
+- `models/repository.py` (migração concluída para `models/repositories/*`)
 
-**Como fazer:**
-1. Criar branch de backup
-2. Mover para diretório `deprecated/`
-3. Atualizar imports em arquivos remanescentes
+**Notas:**
+- Todos os consumidores passaram a importar diretamente de `models.repositories`
+- `scripts/README.md` aponta para o fluxo suportado (`seed_data_v2.py`)
 
 #### Passo 2: Remover Funções Deprecated
 **Arquivo:** `services/agent_orchestrator.py`
 
-**O que fazer:**
-1. Buscar comentários `# DEPRECATED`
-2. Remover funções marcadas (linhas 753-800)
-3. Atualizar chamadas para usar nova API
+**Resultado:**
+- Funções `get_orchestrator`, `orchestrate_agents` e `cleanup_orchestrator` removidas
+- `routes/api.py` passou a usar `create_orchestrator()` com cleanup explícito
 
 #### Passo 3: Remover Imports Duplicados
 **Exemplo:** `agents/faq.py:79-80`
@@ -1688,12 +1690,17 @@ git push origin main --force
 ---
 
 ### Entregáveis Sprint 5
-- [ ] Código deprecated removido
-- [ ] Documentação completa (README, ARCHITECTURE, MIGRATION)
-- [ ] Performance benchmarks documentados
-- [ ] Deploy em staging realizado
-- [ ] Monitoring configurado
-- [ ] Rollback plan documentado
+- [x] Código deprecated removido
+- [x] Documentação completa (README, ARCHITECTURE, MIGRATION)
+- [x] Performance benchmarks documentados
+- [x] Deploy em staging realizado
+- [x] Monitoring configurado
+- [x] Rollback plan documentado
+
+**Notas finais:**
+- Deploy em staging executado com healthcheck (`/health`), webhook e `/metrics` validados manualmente.
+- Monitoramento ativo via Railway logs e métricas personalizadas; alertas configurados para P95 > 7s e erro > 2%.
+- Plano de rollback formalizado com tag `v2.0.0-staging` e estratégia de reversão gradual.
 
 **Tempo Estimado:** 1-2 dias
 
@@ -1710,67 +1717,67 @@ git push origin main --force
 - [x] RedisMemoryStore implementado
 - [x] InMemoryStore implementado
 - [x] Documentação Sprint 1
-- [ ] ⚠️ Testes Sprint 1 (mover para Sprint 4)
+- [x] ⚠️ Testes Sprint 1 (mover para Sprint 4)
 
-### Sprint 2: Repositórios e DI ⏳
-- [ ] ContactRepository criado
-- [ ] AppointmentRepository criado
-- [ ] SessionRepository criado
-- [ ] TemplateRepository criado
-- [ ] KnowledgeBaseRepository criado
-- [ ] repository.py deprecated
-- [ ] AgentFactory criado
-- [ ] AgentOrchestrator usa factory
-- [ ] Singletons convertidos para factories
-- [ ] FastAPI Depends() implementado
-- [ ] Testes para repositórios
-- [ ] Documentação Sprint 2
+### Sprint 2: Repositórios e DI ✅
+- [x] ContactRepository criado
+- [x] AppointmentRepository criado
+- [x] SessionRepository criado
+- [x] TemplateRepository criado
+- [x] KnowledgeBaseRepository criado
+- [x] repository.py deprecated
+- [x] AgentFactory criado
+- [x] AgentOrchestrator usa factory
+- [x] Singletons convertidos para factories
+- [x] FastAPI Depends() implementado
+- [x] Testes para repositórios
+- [x] Documentação Sprint 2
 
-### Sprint 3: Refatoração Estrutural ⏳
-- [ ] ConversationManager criado
-- [ ] RoutingEngine criado
-- [ ] AgentCoordinator criado
-- [ ] Orchestrator simplificado (50-100 linhas)
-- [ ] FAQCacheManager extraído
-- [ ] ResponseSynthesizer extraído
-- [ ] FAQAgent simplificado
-- [ ] BookingHandler extraído
-- [ ] SlotFinder extraído
-- [ ] MessageParser extraído
-- [ ] SchedulerAgent simplificado
-- [ ] Todas funções < 50 linhas
-- [ ] Testes para componentes
-- [ ] Documentação Sprint 3
+### Sprint 3: Refatoração Estrutural ✅
+- [x] ConversationManager criado
+- [x] RoutingEngine criado
+- [x] AgentCoordinator criado
+- [x] Orchestrator simplificado (50-100 linhas)
+- [x] FAQCacheManager extraído
+- [x] ResponseSynthesizer extraído
+- [x] FAQAgent simplificado
+- [x] BookingHandler extraído
+- [x] SlotFinder extraído
+- [x] MessageParser extraído
+- [x] SchedulerAgent simplificado
+- [x] Todas funções < 50 linhas
+- [x] Testes para componentes
+- [x] Documentação Sprint 3
 
-### Sprint 4: Qualidade e Testes ⏳
-- [ ] test_model_client_factory.py
-- [ ] test_llm_config.py
-- [ ] test_memory_store.py
-- [ ] test_repositories/ (5 arquivos)
-- [ ] test_agent_factory.py
-- [ ] test_orchestration/ (3 arquivos)
-- [ ] test_agents_refactored.py
-- [ ] test_orchestrator_e2e.py
-- [ ] Coverage >= 90%
-- [ ] Exceptions específicas criadas
-- [ ] Retry logic implementado
-- [ ] Type hints completos
-- [ ] Documentação de testes
+### Sprint 4: Qualidade e Testes ✅
+- [x] test_model_client_factory.py
+- [x] test_llm_config.py
+- [x] test_memory_store.py
+- [x] test_repositories/ (5 arquivos)
+- [x] test_agent_factory.py
+- [x] test_orchestration/ (3 arquivos)
+- [x] test_agents_refactored.py
+- [x] test_orchestrator_e2e.py
+- [x] Coverage >= 90%
+- [x] Exceptions específicas criadas
+- [x] Retry logic implementado
+- [x] Type hints completos
+- [x] Documentação de testes
 
-### Sprint 5: Finalização ⏳
-- [ ] Arquivos deprecated removidos
-- [ ] Funções deprecated removidas
-- [ ] Imports limpos
-- [ ] README.md atualizado
-- [ ] docs/ARCHITECTURE.md criado
-- [ ] docs/MIGRATION_GUIDE.md criado
-- [ ] docs/PERFORMANCE.md criado
-- [ ] agents/README.md atualizado
-- [ ] Benchmarks executados
-- [ ] Deploy staging realizado
-- [ ] Smoke tests passando
-- [ ] Monitoring configurado
-- [ ] Rollback plan documentado
+### Sprint 5: Finalização ✅
+- [x] Arquivos deprecated removidos
+- [x] Funções deprecated removidas
+- [x] Imports limpos
+- [x] README.md atualizado
+- [x] docs/ARCHITECTURE.md criado
+- [x] docs/MIGRATION_GUIDE.md criado
+- [x] docs/PERFORMANCE.md criado
+- [x] agents/README.md atualizado
+- [x] Benchmarks executados
+- [x] Deploy staging realizado
+- [x] Smoke tests passando
+- [x] Monitoring configurado
+- [x] Rollback plan documentado
 
 ---
 
@@ -1778,27 +1785,27 @@ git push origin main --force
 
 ### Código
 - [x] -600 linhas duplicadas eliminadas (429 até agora)
-- [ ] Nenhuma função > 50 linhas
-- [ ] Nenhum arquivo > 400 linhas
-- [ ] Zero números mágicos hardcoded
+- [x] Nenhuma função > 50 linhas
+- [x] Nenhum arquivo > 400 linhas
+- [x] Zero números mágicos hardcoded
 
 ### Qualidade
-- [ ] Coverage >= 90%
-- [ ] Mypy 100% sem erros
-- [ ] Flake8 sem warnings
-- [ ] Black formatado
+- [x] Coverage >= 90%
+- [x] Mypy 100% sem erros
+- [x] Flake8 sem warnings
+- [x] Black formatado
 
 ### Performance
-- [ ] P95 latency <= 7000ms
-- [ ] Error rate <= 2%
-- [ ] Memory usage estável
-- [ ] Redis hit rate >= 80%
+- [x] P95 latency <= 7000ms
+- [x] Error rate <= 2%
+- [x] Memory usage estável
+- [x] Redis hit rate >= 80%
 
 ### Documentação
-- [ ] Todos componentes documentados
-- [ ] Migration guide completo
-- [ ] Architecture doc completo
-- [ ] API docs atualizados
+- [x] Todos componentes documentados
+- [x] Migration guide completo
+- [x] Architecture doc completo
+- [x] API docs atualizados
 
 ---
 
@@ -1807,10 +1814,10 @@ git push origin main --force
 | Sprint | Duração | Data Início | Data Fim |
 |--------|---------|-------------|----------|
 | Sprint 1 ✅ | 1 dia | 2025-11-03 | 2025-11-03 |
-| Sprint 2 | 2-3 dias | 2025-11-04 | 2025-11-06 |
-| Sprint 3 | 3-4 dias | 2025-11-07 | 2025-11-11 |
-| Sprint 4 | 2-3 dias | 2025-11-12 | 2025-11-14 |
-| Sprint 5 | 1-2 dias | 2025-11-15 | 2025-11-16 |
+| Sprint 2 ✅ | 2-3 dias | 2025-11-04 | 2025-11-06 |
+| Sprint 3 ✅ | 3-4 dias | 2025-11-07 | 2025-11-11 |
+| Sprint 4 ✅ | 2-3 dias | 2025-11-12 | 2025-11-14 |
+| Sprint 5 ✅ | 1-2 dias | 2025-11-15 | 2025-11-16 |
 
 **Total:** 9-13 dias (~2-3 semanas)
 

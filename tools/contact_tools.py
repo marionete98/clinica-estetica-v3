@@ -9,9 +9,9 @@ import logging
 from typing import Optional, Dict, Any
 from uuid import UUID
 
-from models.repository import (
+from models.repositories.contacts import (
     create_or_update_contact as repo_create_or_update_contact,
-    get_contact_by_phone as repo_get_contact_by_phone
+    get_contact_by_phone as repo_get_contact_by_phone,
 )
 from models.database import Contact
 

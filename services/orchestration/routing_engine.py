@@ -1,6 +1,4 @@
-"""
-Engine responsável por classificar a intenção e definir o agente de destino.
-"""
+"""Define lógica de roteamento entre agentes com base em intenções."""
 
 from __future__ import annotations
 

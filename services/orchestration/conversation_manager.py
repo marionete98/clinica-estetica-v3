@@ -1,6 +1,4 @@
-"""
-Gerencia o histórico de conversas armazenado no Redis.
-"""
+"""Gerencia o histórico de conversas armazenado no Redis."""
 
 from __future__ import annotations
 

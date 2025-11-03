@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+
 _REQUIRED_ENV = {
     "SUPABASE_URL": "https://example.supabase.co",
     "SUPABASE_KEY": "test-supabase-key",

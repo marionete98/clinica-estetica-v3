@@ -157,17 +157,17 @@ SCHEDULER_TOOLS = {
 
 #### **Removido:**
 ```python
-from models.repository import (
-    get_service_by_id,  # ❌ Removido
-    get_contact_by_id,
-    create_appointment as repo_create_appointment
+from models.repositories.services import get_service_by_id  # ❌ Removido
+from models.repositories.contacts import get_contact_by_id
+from models.repositories.appointments import (
+    create_appointment as repo_create_appointment,
 )
 ```
 
 #### **Mantido:**
 ```python
-from models.repository import (
-    get_contact_by_id,  # ✅ Ainda necessário
+from models.repositories.contacts import get_contact_by_id  # ✅ Ainda necessário
+from models.repositories.appointments import (
     create_appointment as repo_create_appointment  # ✅ Tracking opcional
 )
 ```

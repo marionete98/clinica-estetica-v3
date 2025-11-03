@@ -7,9 +7,9 @@ Requirements: 5.1, 5.2, 5.4
 import logging
 from typing import List, Dict, Any, Optional
 
-from models.repository import (
+from models.repositories.knowledge_base import (
+    get_message_template as repo_get_message_template,
     search_knowledge_base as repo_search_knowledge_base,
-    get_message_template as repo_get_message_template
 )
 
 logger = logging.getLogger(__name__)

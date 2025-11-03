@@ -11,11 +11,9 @@ from uuid import UUID
 
 from config.settings import settings
 from tools.calendar_api_client import get_calendar_client, CalendarAPIError
-from models.repository import (
-    get_contact_by_id,
-    get_service_by_id,
-    create_appointment as repo_create_appointment
-)
+from models.repositories.appointments import create_appointment as repo_create_appointment
+from models.repositories.contacts import get_contact_by_id
+from models.repositories.services import get_service_by_id
 
 logger = logging.getLogger(__name__)
 
