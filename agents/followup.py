@@ -58,7 +58,7 @@ from autogen_core.tools import FunctionTool
 from agents.model_client_factory import create_model_client
 from config.llm_config import LLMConfig
 from config.chatwoot_client import chatwoot_client
-from models.repository import get_message_template
+from models.repositories.knowledge_base import get_message_template
 from utils.circuit_breakers import chatwoot_breaker, CircuitBreakerError
 
 logger = logging.getLogger(__name__)

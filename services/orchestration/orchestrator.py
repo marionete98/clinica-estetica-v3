@@ -1,7 +1,9 @@
+"""Orquestrador principal que delega mensagens aos agentes especializados."""
+
 from __future__ import annotations
 
 import logging
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from agents.agent_factory import AgentFactory, get_agent_factory
 from config.redis_client import RedisClient

@@ -15,7 +15,7 @@ from config.redis_client import RedisClient
 from config.supabase_client import SupabaseOperations
 from config.chatwoot_client import chatwoot_client
 from services.container import get_redis_client, get_supabase_ops
-from services.agent_orchestrator import orchestrate_agents
+from services.agent_orchestrator import create_orchestrator
 from utils.circuit_breakers import chatwoot_breaker, CircuitBreakerError
 
 logger = logging.getLogger(__name__)
@@ -207,12 +207,15 @@ async def chat_endpoint(request: ChatRequest):
             f"phone={request.phone}, message='{request.message[:50]}...'"
         )
 
-        # Orchestrate agents
-        result = await orchestrate_agents(
-            conversation_id=conversation_id,
-            phone=request.phone,
-            message=request.message,
-        )
+        orchestrator = await create_orchestrator()
+        try:
+            result = await orchestrator.orchestrate(
+                conversation_id=conversation_id,
+                phone=request.phone,
+                message=request.message,
+            )
+        finally:
+            await orchestrator.cleanup()
 
         return ChatResponse(
             response=result.get("response", ""),

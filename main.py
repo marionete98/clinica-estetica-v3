@@ -25,7 +25,6 @@ from jobs.reminder_job import run_reminder_job
 from jobs.feedback_job import run_feedback_job
 from jobs.kb_sync_job import create_kb_sync_job
 from services.alerts import run_alert_check
-from services.agent_orchestrator import cleanup_orchestrator
 from middleware.rate_limit import RateLimitMiddleware
 
 # Configure logging
@@ -174,13 +173,6 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("Shutting down Clínica Luana Multi-Agent System...")
-
-    # Cleanup agent orchestrator (close all model clients)
-    try:
-        await cleanup_orchestrator()
-        logger.info("Agent orchestrator cleaned up")
-    except Exception as e:
-        logger.error(f"Error cleaning up agent orchestrator: {e}")
 
     # Shutdown scheduler
     if scheduler:

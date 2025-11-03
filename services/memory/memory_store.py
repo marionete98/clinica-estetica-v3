@@ -1,5 +1,4 @@
-"""
-Memory Store abstract interface for agent system.
+"""Memory Store abstract interface for the clinic multi-agent system.
 
 Provides abstraction over caching/memory backends to decouple business logic
 from specific implementations like Redis.
@@ -7,7 +6,6 @@ from specific implementations like Redis.
 
 from abc import ABC, abstractmethod
 from typing import Any, Optional, List, Dict
-from datetime import timedelta
 
 
 class MemoryStore(ABC):

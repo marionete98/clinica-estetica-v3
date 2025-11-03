@@ -464,6 +464,21 @@ class RedisClient:
             return False
 
 
+_redis_client: Optional[RedisClient] = None
+
+
+def get_redis_client() -> RedisClient:
+    """Get or lazily create a Redis client instance."""
+    global _redis_client
+    if _redis_client is None:
+        _redis_client = RedisClient()
+    return _redis_client
+
+
+# Backwards compatibility for modules importing redis_client directly
+redis_client = get_redis_client()
+
+
 def create_redis_client() -> RedisClient:
     """
     Factory helper para instanciar um novo RedisClient.
@@ -471,4 +486,4 @@ def create_redis_client() -> RedisClient:
     return RedisClient()
 
 
-__all__ = ["RedisClient", "create_redis_client"]
+__all__ = ["RedisClient", "create_redis_client", "get_redis_client", "redis_client"]

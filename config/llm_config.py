@@ -1,9 +1,4 @@
-"""
-LLM Configuration types and constants for agent system.
-
-Provides type-safe configuration structures and default constants
-to eliminate magic numbers and improve maintainability.
-"""
+"""Type-safe configuration structures and constants for agent LLMs."""
 
 from typing import TypedDict, Literal, Optional
 

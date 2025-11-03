@@ -1,3 +1,5 @@
+"""Agente responsável por fluxos de agendamento e remarcação."""
+
 from __future__ import annotations
 
 import json
@@ -127,8 +129,7 @@ def _build_prompt(
     context: List[Dict[str, str]],
 ) -> str:
     history = "\n".join(
-        f"{msg.get('role','unknown')}: {msg.get('content','')}"
-        for msg in context[-5:]
+        f"{msg.get('role','unknown')}: {msg.get('content','')}" for msg in context[-5:]
     )
     contact_section = (
         f"**Informações do Paciente:**\n"
@@ -151,6 +152,17 @@ def _build_prompt(
 
 
 def _build_tools() -> List[FunctionTool]:
+    return [
+        _create_list_available_slots_tool(),
+        _create_create_booking_tool(),
+        _create_get_patient_bookings_tool(),
+        _create_cancel_booking_tool(),
+        _create_reschedule_booking_tool(),
+        _create_check_policy_tool(),
+    ]
+
+
+def _create_list_available_slots_tool() -> FunctionTool:
     async def list_available_slots_tool(
         service_id: str,
         date_range: int = 7,
@@ -165,6 +177,15 @@ def _build_tools() -> List[FunctionTool]:
         )
         return json.dumps(result)
 
+    return FunctionTool(
+        list_available_slots_tool,
+        description=(
+            "Consulta horários disponíveis respeitando regras do negócio e retorna até 5 opções."
+        ),
+    )
+
+
+def _create_create_booking_tool() -> FunctionTool:
     async def create_booking_tool(
         contact_id: str,
         service_id: str,
@@ -181,16 +202,35 @@ def _build_tools() -> List[FunctionTool]:
         )
         return json.dumps(result)
 
+    return FunctionTool(
+        create_booking_tool,
+        description="Cria um novo agendamento confirmado após aprovação explícita do paciente.",
+    )
+
+
+def _create_get_patient_bookings_tool() -> FunctionTool:
     async def get_patient_bookings_tool(phone: str) -> str:
         result = await get_patient_bookings(phone=phone)
         return json.dumps(result)
 
-    async def cancel_booking_tool(
-        booking_id: str, reason: Optional[str] = None
-    ) -> str:
+    return FunctionTool(
+        get_patient_bookings_tool,
+        description="Recupera agendamentos existentes para revisar conflitos ou confirmar detalhes.",
+    )
+
+
+def _create_cancel_booking_tool() -> FunctionTool:
+    async def cancel_booking_tool(booking_id: str, reason: Optional[str] = None) -> str:
         result = await cancel_booking(booking_id=booking_id, reason=reason)
         return json.dumps(result)
 
+    return FunctionTool(
+        cancel_booking_tool,
+        description="Cancela um agendamento aplicando a política vigente e sinalizando impactos.",
+    )
+
+
+def _create_reschedule_booking_tool() -> FunctionTool:
     async def reschedule_booking_tool(
         booking_id: str,
         new_start_datetime: str,
@@ -201,38 +241,21 @@ def _build_tools() -> List[FunctionTool]:
         )
         return json.dumps(result)
 
+    return FunctionTool(
+        reschedule_booking_tool,
+        description="Reagenda um procedimento mantendo o histórico de contagens e limites.",
+    )
+
+
+def _create_check_policy_tool() -> FunctionTool:
     async def check_cancellation_policy_tool(booking_id: str) -> str:
         result = await check_cancellation_policy(booking_id=booking_id)
         return json.dumps(result)
 
-    return [
-        FunctionTool(
-            list_available_slots_tool,
-            description=(
-                "Consulta horários disponíveis respeitando regras do negócio e retorna até 5 opções."
-            ),
-        ),
-        FunctionTool(
-            create_booking_tool,
-            description="Cria um novo agendamento confirmado após aprovação explícita do paciente.",
-        ),
-        FunctionTool(
-            get_patient_bookings_tool,
-            description="Recupera agendamentos existentes para revisar conflitos ou confirmar detalhes.",
-        ),
-        FunctionTool(
-            cancel_booking_tool,
-            description="Cancela um agendamento aplicando a política vigente e sinalizando impactos.",
-        ),
-        FunctionTool(
-            reschedule_booking_tool,
-            description="Reagenda um procedimento mantendo o histórico de contagens e limites.",
-        ),
-        FunctionTool(
-            check_cancellation_policy_tool,
-            description="Consulta regras de cancelamento aplicáveis ao tratamento informado.",
-        ),
-    ]
+    return FunctionTool(
+        check_cancellation_policy_tool,
+        description="Consulta regras de cancelamento aplicáveis ao tratamento informado.",
+    )
 
 
 __all__ = ["SchedulerAgent"]

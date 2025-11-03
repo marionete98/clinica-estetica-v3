@@ -1,9 +1,4 @@
-"""
-In-memory implementation of MemoryStore for testing and development.
-
-This implementation uses a Python dictionary for storage and is NOT persistent.
-Use only for testing and development.
-"""
+"""In-memory MemoryStore implementation for tests and local development."""
 
 import asyncio
 import fnmatch

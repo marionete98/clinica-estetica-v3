@@ -1,21 +1,36 @@
-"""
-Shared utilities for repository modules.
-"""
+"""Common infrastructure for domain-specific repository implementations."""
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from abc import ABC, abstractmethod
+from typing import Any, Dict, Optional
 
-from config.redis_client import redis_client
+from services.memory import MemoryStore
 
 NOT_FOUND_TTL_SECONDS = 300
-_NOT_FOUND_SENTINEL = {"__not_found__": True}
+_NOT_FOUND_SENTINEL: Dict[str, Any] = {"__not_found__": True}
+
+
+class DataRepository(ABC):
+    """Base contract for data access repositories."""
+
+    def __init__(self, cache: Optional[MemoryStore] = None) -> None:
+        self.cache = cache
+
+    @abstractmethod
+    async def initialize(self) -> None:
+        """Initialize repository connections/resources."""
+
+    @abstractmethod
+    async def close(self) -> None:
+        """Release underlying resources."""
 
 
 def model_to_dict(model: Any) -> Dict[str, Any]:
-    """Convert a Pydantic model or dict-like object to dict."""
+    """Convert a pydantic model or dict-like object into a dictionary."""
+
     if isinstance(model, dict):
-        return model
+        return dict(model)
     if hasattr(model, "model_dump"):
         return model.model_dump()
     if hasattr(model, "dict"):
@@ -24,13 +39,27 @@ def model_to_dict(model: Any) -> Dict[str, Any]:
 
 
 def is_not_found(value: Any) -> bool:
-    """Check if cached value matches the not-found sentinel."""
+    """Detect cached sentinel values representing not-found lookups."""
+
     return isinstance(value, dict) and value.get("__not_found__") is True
 
 
-async def cache_not_found(key: str, ttl: int = NOT_FOUND_TTL_SECONDS) -> None:
-    """Cache sentinel value for missed lookups to avoid repeated queries."""
-    await redis_client.set_value(key, _NOT_FOUND_SENTINEL, ttl)
+async def cache_not_found(
+    cache: Optional[MemoryStore],
+    key: str,
+    ttl: int = NOT_FOUND_TTL_SECONDS,
+) -> None:
+    """Store a not-found sentinel value when lookups miss the backing store."""
+
+    if cache is None:
+        return
+    await cache.set(key, _NOT_FOUND_SENTINEL, ttl=ttl)
 
 
-__all__ = ["NOT_FOUND_TTL_SECONDS", "model_to_dict", "is_not_found", "cache_not_found"]
+__all__ = [
+    "DataRepository",
+    "NOT_FOUND_TTL_SECONDS",
+    "cache_not_found",
+    "is_not_found",
+    "model_to_dict",
+]

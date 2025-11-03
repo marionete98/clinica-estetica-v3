@@ -42,42 +42,8 @@ async def orchestrator_lifespan():
         await orchestrator.cleanup()
 
 
-def get_orchestrator() -> AgentOrchestrator:
-    logger.warning(
-        "get_orchestrator() está depreciado. Use create_orchestrator() com Depends."
-    )
-    return AgentOrchestrator(
-        agent_factory=get_agent_factory(),
-        redis_client=get_redis_client(),
-        supabase_ops=get_supabase_ops(),
-    )
-
-
-async def orchestrate_agents(
-    conversation_id: str, phone: str, message: str
-) -> dict:
-    orchestrator = AgentOrchestrator(
-        agent_factory=get_agent_factory(),
-        redis_client=get_redis_client(),
-        supabase_ops=get_supabase_ops(),
-    )
-    try:
-        return await orchestrator.orchestrate(conversation_id, phone, message)
-    finally:
-        await orchestrator.cleanup()
-
-
-async def cleanup_orchestrator() -> None:
-    logger.info(
-        "cleanup_orchestrator() chamado. Com DI não há instância global ativa."
-    )
-
-
 __all__ = [
     "AgentOrchestrator",
     "create_orchestrator",
     "orchestrator_lifespan",
-    "get_orchestrator",
-    "orchestrate_agents",
-    "cleanup_orchestrator",
 ]

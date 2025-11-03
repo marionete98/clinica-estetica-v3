@@ -584,7 +584,11 @@ class TestTimezoneHandling:
         
         with patch('tools.reschedule_tools.get_appointment_by_id', return_value=mock_appointment):
             with patch('tools.reschedule_tools.get_service_by_id', return_value=mock_service):
-                with patch('models.repository.get_contact_by_id', new_callable=AsyncMock, return_value=mock_contact):
+                with patch(
+                    'models.repositories.contacts.get_contact_by_id',
+                    new_callable=AsyncMock,
+                    return_value=mock_contact,
+                ):
                     # Should not raise TypeError
                     result = await check_cancellation_policy(str(mock_appointment.id))
                     

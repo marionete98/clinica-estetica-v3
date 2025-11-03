@@ -4,7 +4,8 @@ Test orchestrator cleanup functionality.
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from services.agent_orchestrator import AgentOrchestrator, cleanup_orchestrator
+
+from services.agent_orchestrator import AgentOrchestrator
 
 
 @pytest.mark.asyncio
@@ -73,23 +74,6 @@ async def test_orchestrator_cleanup_handles_errors():
         
         # Verify other agents still had cleanup called
         mock_intake_agent.cleanup.assert_called_once()
-
-
-@pytest.mark.asyncio
-async def test_global_cleanup_orchestrator():
-    """
-    Test that global cleanup_orchestrator() is a no-op with DI pattern.
-
-    With the new dependency injection pattern, there is no global orchestrator
-    instance. Each request gets its own instance that is cleaned up automatically.
-    The cleanup_orchestrator() function is maintained for backward compatibility
-    but does nothing.
-    """
-    # Call global cleanup (should be a no-op)
-    await cleanup_orchestrator()
-
-    # No assertions needed - just verify it doesn't raise an error
-    # The function logs a message but doesn't perform any cleanup
 
 
 @pytest.mark.asyncio

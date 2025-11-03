@@ -403,6 +403,33 @@ class SupabaseOperations:
             raise
 
 
+_supabase_client: Optional[SupabaseClient] = None
+_supabase_operations: Optional[SupabaseOperations] = None
+
+
+def get_supabase_client() -> SupabaseClient:
+    """Get or lazily create a Supabase client."""
+    global _supabase_client
+    if _supabase_client is None:
+        _supabase_client = create_supabase_client()
+    return _supabase_client
+
+
+def get_supabase_operations(client: SupabaseClient | None = None) -> SupabaseOperations:
+    """Get or lazily create Supabase operations helper."""
+    global _supabase_operations
+    if client is None:
+        client = get_supabase_client()
+    if _supabase_operations is None:
+        _supabase_operations = create_supabase_operations(client)
+    return _supabase_operations
+
+# Backwards compatibility for modules importing legacy singletons
+supabase_client = get_supabase_client()
+supabase_operations = get_supabase_operations()
+
+
+
 def create_supabase_client() -> SupabaseClient:
     """Factory helper to instantiate SupabaseClient."""
     return SupabaseClient()
@@ -418,4 +445,8 @@ __all__ = [
     "SupabaseOperations",
     "create_supabase_client",
     "create_supabase_operations",
+    "get_supabase_client",
+    "get_supabase_operations",
+    "supabase_client",
+    "supabase_operations",
 ]

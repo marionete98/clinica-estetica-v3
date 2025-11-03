@@ -1,8 +1,11 @@
+"""Payload helpers for Scheduler agent responses."""
+
 from __future__ import annotations
 
 from typing import Dict
 
 from utils.error_handlers import ErrorRecoveryStrategy, ErrorType, get_fallback_response
+
 
 _SCHEDULING_KEYWORDS = {
     "agendar",
@@ -48,7 +51,10 @@ def ensure_scheduling_hint(user_message: str, response_text: str) -> str:
     if any(keyword in response_text.lower() for keyword in _RESPONSE_HINTS):
         return response_text
 
-    return response_text.rstrip() + "\n\nPosso verificar a agenda e horários disponíveis para você."
+    return (
+        response_text.rstrip()
+        + "\n\nPosso verificar a agenda e horários disponíveis para você."
+    )
 
 
 def build_success_payload(parsed: Dict[str, object]) -> Dict[str, object]:

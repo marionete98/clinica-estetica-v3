@@ -1,11 +1,7 @@
 """
 Verification script for task 6: Update main.py with resource cleanup.
 
-This script verifies that:
-1. cleanup_orchestrator is imported in main.py
-2. cleanup_orchestrator is called in the shutdown handler
-3. Error handling is in place
-4. All agents have cleanup methods
+"""Validate shutdown routines and agent cleanup helpers."""
 """
 
 import ast
@@ -30,28 +26,27 @@ def verify_main_py_cleanup():
     with open(main_py_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Check 1: Import cleanup_orchestrator
-    print("✓ Checking import of cleanup_orchestrator...")
-    if "from services.agent_orchestrator import cleanup_orchestrator" in content:
-        print("  ✅ cleanup_orchestrator is imported")
-    else:
-        print("  ❌ cleanup_orchestrator is NOT imported")
+    # Check 1: Legacy cleanup removed
+    print("✓ Checking absence of legacy cleanup_orchestrator...")
+    if "cleanup_orchestrator" in content:
+        print("  ❌ Legacy cleanup_orchestrator reference detected")
         return False
-    
-    # Check 2: Call cleanup_orchestrator in shutdown
-    print("\n✓ Checking cleanup_orchestrator call in shutdown handler...")
-    if "await cleanup_orchestrator()" in content:
-        print("  ✅ cleanup_orchestrator() is called in shutdown")
+    print("  ✅ Legacy cleanup removed")
+
+    # Check 2: Scheduler shutdown present
+    print("\n✓ Checking scheduler shutdown handling...")
+    if "scheduler.shutdown" in content:
+        print("  ✅ Scheduler shutdown call present")
     else:
-        print("  ❌ cleanup_orchestrator() is NOT called in shutdown")
+        print("  ❌ Scheduler shutdown call missing")
         return False
-    
-    # Check 3: Error handling
-    print("\n✓ Checking error handling for cleanup...")
-    if "try:" in content and "await cleanup_orchestrator()" in content and "except Exception" in content:
-        print("  ✅ Error handling is in place")
+
+    # Check 3: Chatwoot client cleanup
+    print("\n✓ Checking Chatwoot client cleanup...")
+    if "chatwoot_client.close" in content:
+        print("  ✅ Chatwoot client is closed on shutdown")
     else:
-        print("  ❌ Error handling is missing")
+        print("  ❌ Chatwoot client cleanup missing")
         return False
     
     # Check 4: Lifespan context manager
@@ -63,12 +58,12 @@ def verify_main_py_cleanup():
     
     # Check 5: Logging
     print("\n✓ Checking cleanup logging...")
-    if 'logger.info("Agent orchestrator cleaned up")' in content:
+    if "logger.info(\"APScheduler shut down\")" in content:
         print("  ✅ Success logging is present")
     else:
         print("  ⚠️  Success logging is missing")
-    
-    if 'logger.error(f"Error cleaning up agent orchestrator:' in content:
+
+    if "logger.error(f\"Error shutting down scheduler" in content:
         print("  ✅ Error logging is present")
     else:
         print("  ⚠️  Error logging is missing")
@@ -99,14 +94,6 @@ def verify_orchestrator_cleanup():
         print("  ✅ cleanup() method exists")
     else:
         print("  ❌ cleanup() method is missing")
-        return False
-    
-    # Check cleanup_orchestrator function exists
-    print("\n✓ Checking cleanup_orchestrator() function...")
-    if "async def cleanup_orchestrator():" in content:
-        print("  ✅ cleanup_orchestrator() function exists")
-    else:
-        print("  ❌ cleanup_orchestrator() function is missing")
         return False
     
     # Check agents list
@@ -184,10 +171,10 @@ def main():
         print("✅ ALL CHECKS PASSED")
         print()
         print("Task 6 requirements verified:")
-        print("  ✓ cleanup_orchestrator is imported in main.py")
-        print("  ✓ Shutdown handler calls cleanup_orchestrator()")
-        print("  ✓ Error handling is in place")
-        print("  ✓ All agents have cleanup methods")
+        print("  ✓ Legacy cleanup functions removed")
+        print("  ✓ Scheduler and Chatwoot cleanup configured")
+        print("  ✓ Logging present for shutdown routines")
+        print("  ✓ All agents expose cleanup methods")
         print()
         print("The implementation is complete and ready for testing.")
         return 0

@@ -386,33 +386,29 @@ class ProductionCompatibilityValidator:
             return False
     
     async def validate_orchestrator_cleanup(self) -> bool:
-        """Validate orchestrator cleanup functionality."""
-        logger.info("\n" + "="*60)
-        logger.info("TEST 8: Orchestrator Cleanup")
-        logger.info("="*60)
-        
+        """Validate shutdown routines for scheduler and Chatwoot client."""
+        logger.info("\n" + "=" * 60)
+        logger.info("TEST 8: Shutdown Routines")
+        logger.info("=" * 60)
+
         try:
-            from services.agent_orchestrator import cleanup_orchestrator
-            
-            # Check cleanup function exists and is callable
-            cleanup_exists = callable(cleanup_orchestrator)
-            
-            # Check it's registered in main.py lifespan
-            with open("main.py", "r") as f:
+            with open("main.py", "r", encoding="utf-8") as f:
                 main_content = f.read()
-            
-            cleanup_registered = "cleanup_orchestrator" in main_content and \
-                               "await cleanup_orchestrator()" in main_content
-            
-            both_valid = cleanup_exists and cleanup_registered
-            
-            details = f"Function exists: {cleanup_exists}, Registered in lifespan: {cleanup_registered}"
-            self.log_result("Orchestrator Cleanup", both_valid, details)
-            
-            return both_valid
-            
+
+            legacy_cleanup = "cleanup_orchestrator" not in main_content
+            scheduler_shutdown = "scheduler.shutdown" in main_content
+            chatwoot_close = "chatwoot_client.close" in main_content
+
+            all_valid = legacy_cleanup and scheduler_shutdown and chatwoot_close
+            details = (
+                f"Legacy removed: {legacy_cleanup}, Scheduler shutdown: {scheduler_shutdown}, "
+                f"Chatwoot close: {chatwoot_close}"
+            )
+            self.log_result("Shutdown Routines", all_valid, details)
+            return all_valid
+
         except Exception as e:
-            self.log_result("Orchestrator Cleanup", False, str(e))
+            self.log_result("Shutdown Routines", False, str(e))
             return False
     
     async def validate_scheduled_jobs(self) -> bool:

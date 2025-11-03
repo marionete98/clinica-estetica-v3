@@ -1,5 +1,4 @@
-"""
-Memory storage abstractions for agent system.
+"""Memory storage abstractions for the clinic multi-agent system.
 
 Provides MemoryStore interface and implementations:
 - RedisMemoryStore: Production Redis backend

@@ -63,7 +63,9 @@ def main():
         
         # Models
         ("models.database", "Database models"),
-        ("models.repository", "Repository"),
+        ("models.repositories", "Repository namespace"),
+        ("models.repositories.contacts", "Contacts repository"),
+        ("models.repositories.appointments", "Appointments repository"),
         
         # Routes
         ("routes.webhooks", "Webhooks routes"),

@@ -1,6 +1,4 @@
-"""
-Escalation Agent responsável por preparar handoffs para atendimento humano.
-"""
+"""Escalation Agent responsável por preparar handoffs para atendimento humano."""
 
 from __future__ import annotations
 

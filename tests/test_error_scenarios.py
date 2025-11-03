@@ -188,7 +188,7 @@ async def test_supabase_query_timeout(client):
     
     Requirements: 12.3
     """
-    with patch('models.repository.supabase_client.client') as mock_supabase:
+    with patch('config.supabase_client.supabase_client.client') as mock_supabase:
         # Mock timeout
         mock_supabase.table.return_value.select.return_value.execute.side_effect = \
             asyncio.TimeoutError("Query timeout")

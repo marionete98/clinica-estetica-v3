@@ -11,7 +11,7 @@ from typing import List, Dict, Any
 from services.container import get_supabase_client
 from config.settings import settings
 from models.database import Appointment
-from models.repository import mark_reminder_sent, get_service_by_id, get_contact_by_id
+from models.repositories import get_contact_by_id, get_service_by_id, mark_reminder_sent
 from agents.followup import create_followup_agent
 
 logger = logging.getLogger(__name__)

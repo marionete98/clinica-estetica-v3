@@ -1,13 +1,11 @@
-"""
-Utilidades compartilhadas entre componentes de orquestração.
-"""
+"""Funções auxiliares utilizadas pelo orquestrador de agentes."""
 
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from models.repository import get_session_by_conversation_id
+from models.repositories.sessions import get_session_by_conversation_id
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +70,7 @@ async def cleanup_agents(agents: Dict[str, Any]) -> None:
             elif getattr(agent, "model_client", None):
                 await agent.model_client.close()  # type: ignore[func-returns-value]
         except Exception as exc:  # noqa: BLE001
-                logger.error("Erro ao limpar agente %s: %s", name, exc, exc_info=True)
+            logger.error("Erro ao limpar agente %s: %s", name, exc, exc_info=True)
 
 
 PAUSED_PAYLOAD = dict(
