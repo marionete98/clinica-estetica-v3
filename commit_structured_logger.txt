@@ -1,0 +1,6 @@
+Fix structured logger Supabase logging API
+
+- Extend log_to_supabase to accept level/message/context parameters
+- Store level/message/context within request_payload _log_* keys to match schema
+- Use supabase_ops.insert asynchronously to avoid blocking and ensure retries
+- Update KB cache sync job to log structured data without TypeError

@@ -1,0 +1,262 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                  ARQUITETURA DE CONTEXTO - VISÃO SIMPLIFICADA                 ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                             CAMADA 1: REDIS                                  │
+│                     (Memória de Curto Prazo - 24h)                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Chave: conv:{conversation_id}                                              │
+│  Tipo: Lista (FIFO)                                                         │
+│  TTL: 24 horas (auto-renovado)                                              │
+│  Max: 20 mensagens mais recentes                                            │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────┐         │
+│  │ Estrutura de Mensagem:                                         │         │
+│  │ {                                                              │         │
+│  │   "role": "user" | "assistant",                               │         │
+│  │   "content": "texto da mensagem",                             │         │
+│  │   "ts": "2025-10-20T10:00:00",                                │         │
+│  │   "metadata": {                                               │         │
+│  │     "intent": "schedule",                                     │         │
+│  │     "agent": "scheduler",                                     │         │
+│  │     "confidence": 0.95                                        │         │
+│  │   }                                                           │         │
+│  │ }                                                             │         │
+│  └────────────────────────────────────────────────────────────────┘         │
+│                                                                              │
+│  Operações:                                                                 │
+│  • RPUSH conv:12345 '{"role":"user",...}'  → Adiciona ao final             │
+│  • LRANGE conv:12345 -10 -1                → Busca últimas 10               │
+│  • LTRIM conv:12345 -20 -1                 → Mantém últimas 20              │
+│  • EXPIRE conv:12345 86400                 → Renova TTL (24h)               │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                       ⬇️
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         CAMADA 2: ORCHESTRATOR                               │
+│                    (Gerenciamento Inteligente)                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ╔═══════════════════════════════════════════════════════════════╗          │
+│  ║          CONTEXTO ADAPTATIVO POR AGENTE                        ║          │
+│  ╠═══════════════════════════════════════════════════════════════╣          │
+│  ║                                                                ║          │
+│  ║  ┌──────────────┬────────────┬──────────────────────────┐    ║          │
+│  ║  │ Agent        │ Mensagens  │ Motivo                   │    ║          │
+│  ║  ├──────────────┼────────────┼──────────────────────────┤    ║          │
+│  ║  │ Supervisor   │     3      │ Classificação rápida     │    ║          │
+│  ║  │ Intake       │     3      │ Coleta nome/contato      │    ║          │
+│  ║  │ FAQ          │     4      │ Perguntas simples        │    ║          │
+│  ║  │ Scheduler    │     6      │ Fluxo de agendamento     │    ║          │
+│  ║  │ Escalation   │    10      │ Resumo completo          │    ║          │
+│  ║  └──────────────┴────────────┴──────────────────────────┘    ║          │
+│  ║                                                                ║          │
+│  ╚═══════════════════════════════════════════════════════════════╝          │
+│                                                                              │
+│  Fluxo:                                                                     │
+│  1. Load context minimal (3 msgs) → Supervisor                              │
+│  2. Classificar intent                                                      │
+│  3. Load context específico (3-10 msgs) → Agent escolhido                  │
+│  4. Processar mensagem                                                      │
+│  5. Update context no Redis                                                 │
+│  6. Log no Supabase (async)                                                 │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                       ⬇️
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          CAMADA 3: SUPABASE                                  │
+│                     (Persistência de Longo Prazo)                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐           │
+│  │ conversation_sessions                                        │           │
+│  │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │           │
+│  │ • conversation_id (unique)                                   │           │
+│  │ • last_intent, last_agent                                    │           │
+│  │ • message_count, sentiment                                   │           │
+│  │ • automation_paused                                          │           │
+│  │ • metadata (jsonb)                                           │           │
+│  └──────────────────────────────────────────────────────────────┘           │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐           │
+│  │ conversation_messages                                        │           │
+│  │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │           │
+│  │ • conversation_id, role, content                             │           │
+│  │ • intent, agent, confidence                                  │           │
+│  │ • created_at                                                 │           │
+│  │ → Histórico COMPLETO (sem TTL)                              │           │
+│  └──────────────────────────────────────────────────────────────┘           │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────┐           │
+│  │ logs                                                         │           │
+│  │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │           │
+│  │ • conversation_id, intent, provider                          │           │
+│  │ • latency_ms, tools_used, cost_estimate                      │           │
+│  │ • request_payload, response_payload                          │           │
+│  │ → Observabilidade e Analytics                               │           │
+│  └──────────────────────────────────────────────────────────────┘           │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                      EXEMPLO DE FLUXO COMPLETO                                ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+Mensagem: "Quero agendar uma consulta para amanhã"
+Conversation ID: 12345
+
+┌─ Passo 1: Load Context (Supervisor) ─────────────────────────────────────┐
+│                                                                           │
+│  Redis: LRANGE conv:12345 -3 -1                                          │
+│  Retorna: [                                                              │
+│    {"role":"user","content":"Oi!"},                                      │
+│    {"role":"assistant","content":"Olá! Como posso ajudar?"},            │
+│    {"role":"user","content":"Quero agendar..."}                          │
+│  ]                                                                       │
+│                                                                           │
+│  Tempo: ~3ms                                                             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+                                      ⬇️
+
+┌─ Passo 2: Classificar Intent ────────────────────────────────────────────┐
+│                                                                           │
+│  Supervisor LLM (xAI Grok):                                              │
+│  Input: message + 3 mensagens de contexto                               │
+│                                                                           │
+│  Output: {                                                               │
+│    "intent": "schedule",                                                 │
+│    "agent": "scheduler",                                                 │
+│    "confidence": 0.95,                                                   │
+│    "loop_detected": false                                               │
+│  }                                                                       │
+│                                                                           │
+│  Tempo: ~1.2s                                                            │
+└───────────────────────────────────────────────────────────────────────────┘
+
+                                      ⬇️
+
+┌─ Passo 3: Load Context (Scheduler) ──────────────────────────────────────┐
+│                                                                           │
+│  Redis: LRANGE conv:12345 -6 -1                                          │
+│  Retorna: [últimas 6 mensagens]                                          │
+│                                                                           │
+│  Cache: contact:+5594999999999                                           │
+│  Retorna: {"id":"uuid","name":"Maria Silva"}                             │
+│                                                                           │
+│  Tempo: ~5ms                                                             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+                                      ⬇️
+
+┌─ Passo 4: Processar com Scheduler ───────────────────────────────────────┐
+│                                                                           │
+│  Scheduler Agent:                                                        │
+│  • Buscar slots disponíveis (Calendar API)                               │
+│  • Validar horário de funcionamento                                      │
+│  • Gerar resposta                                                        │
+│                                                                           │
+│  Output: {                                                               │
+│    "response": "Ótimo! Para qual horário você prefere?",                │
+│    "action": "collect_time",                                             │
+│    "next_step": "confirm_booking"                                        │
+│  }                                                                       │
+│                                                                           │
+│  Tempo: ~2.3s                                                            │
+└───────────────────────────────────────────────────────────────────────────┘
+
+                                      ⬇️
+
+┌─ Passo 5: Update Context ────────────────────────────────────────────────┐
+│                                                                           │
+│  Redis: RPUSH conv:12345 '{"role":"user","content":"Quero agendar..."}'  │
+│  Redis: RPUSH conv:12345 '{"role":"assistant","content":"Ótimo!..."}'    │
+│  Redis: LTRIM conv:12345 -20 -1                                          │
+│  Redis: EXPIRE conv:12345 86400                                          │
+│                                                                           │
+│  Novo tamanho: 8 mensagens                                               │
+│  TTL renovado: 24h                                                       │
+│                                                                           │
+│  Tempo: ~4ms                                                             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+                                      ⬇️
+
+┌─ Passo 6: Log Permanente ────────────────────────────────────────────────┐
+│                                                                           │
+│  Supabase (async):                                                       │
+│  • INSERT INTO conversation_messages (...)                               │
+│  • INSERT INTO logs (intent, latency, ...)                              │
+│  • UPDATE conversation_sessions SET last_intent='schedule'               │
+│                                                                           │
+│  Tempo: ~150ms (não bloqueia resposta)                                   │
+└───────────────────────────────────────────────────────────────────────────┘
+
+                                      ⬇️
+
+┌─ Passo 7: Resposta ao Usuário ───────────────────────────────────────────┐
+│                                                                           │
+│  Chatwoot API:                                                           │
+│  POST /api/v1/accounts/1/conversations/12345/messages                    │
+│  {                                                                       │
+│    "content": "Ótimo! Para qual horário você prefere?",                 │
+│    "message_type": "outgoing",                                           │
+│    "private": false                                                      │
+│  }                                                                       │
+│                                                                           │
+│  Tempo: ~200ms                                                           │
+└───────────────────────────────────────────────────────────────────────────┘
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                         TEMPO TOTAL DO FLUXO                                  ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+  Redis Load (Supervisor):     3ms
+  Supervisor LLM:            1200ms
+  Redis Load (Scheduler):      5ms
+  Scheduler LLM:             2300ms
+  Redis Update:                4ms
+  Chatwoot Send:             200ms
+  ─────────────────────────────────
+  TOTAL (síncrono):         ~3.7s   ✅
+
+  Supabase Log (async):      150ms   (não bloqueia)
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                          VANTAGENS DA ARQUITETURA                             ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+✅ PERFORMANCE
+   • Redis < 5ms por operação
+   • Contexto adaptativo (não carrega tudo)
+   • Cache de contatos (87% hit rate)
+   • Logs async (não bloqueia)
+
+✅ ESCALABILIDADE
+   • Redis suporta 10k+ ops/seg
+   • TTL previne crescimento infinito
+   • Stateless (pode escalar horizontalmente)
+
+✅ RESILIÊNCIA
+   • Graceful degradation (Redis fail → contexto vazio)
+   • Circuit breakers em APIs externas
+   • Fallback Supabase se cache falhar
+
+✅ OBSERVABILIDADE
+   • Logs permanentes no Supabase
+   • Métricas por agent/provider
+   • Tracking de custos e latência
+
+✅ MANUTENIBILIDADE
+   • Separação clara de responsabilidades
+   • TTL automático (menos manutenção)
+   • Documentação completa

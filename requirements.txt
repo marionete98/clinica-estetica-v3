@@ -1,0 +1,192 @@
+# ============================================================================
+# CLiNICA LUANA AI SYSTEM - REQUIREMENTS.TXT
+# Updated: October 2025 - Latest stable versions
+# All dependencies updated to their most recent stable releases
+# ============================================================================
+
+# ============================================================================
+# CORE FRAMEWORK - Updated October 2025
+# ============================================================================
+
+# FastAPI - Modern web framework (Pinned to 0.115.5 for agentlightning/litellm compatibility)
+fastapi==0.115.5
+uvicorn[standard]==0.29.0
+python-multipart==0.0.18
+
+# ============================================================================
+# AI & LLM INTEGRATION - Updated October 2025
+# ============================================================================
+
+# AutoGen 0.4.x - Modular multi-agent orchestration framework
+# CRITICAL: AutoGen 0.4.x uses modular packages (autogen-agentchat, autogen-core, autogen-ext)
+# DO NOT use pyautogen (that's the old 0.2.x package)
+autogen-agentchat>=0.4.0,<0.5.0
+autogen-core>=0.4.0,<0.5.0
+autogen-ext[openai,semantic-kernel]>=0.4.2,<0.5.0
+
+# Agent Lightning - Training and evaluation framework for LLM agents
+# Using base package without [apo] extra to avoid litellm/fastapi conflict
+# APO features require manual setup or FastAPI downgrade
+agentlightning==0.2.1
+
+# Semantic Kernel - LLM integration framework for Gemini (GoogleAI) and Grok (xAI via OpenAI-compatible)
+semantic-kernel==1.37.1
+
+# Google Generative AI SDK - Required by Semantic Kernel for Gemini integration
+google-generativeai>=0.8.0,<1.0.0
+
+# OpenAI client (Latest: 1.105.0 - keeping 1.x for stability)
+# Used for xAI Grok via base_url="https://api.x.ai/v1" with Semantic Kernel
+# Note: 2.4.0 available but has breaking changes
+openai==1.105.0
+
+# ============================================================================
+# DATABASE & STORAGE - Updated October 2025
+# ============================================================================
+
+# Supabase client for PostgreSQL (Latest: 2.22.0 - Oct 2025)
+supabase==2.22.0
+
+# Redis client for caching (Latest: 6.4.0 - Aug 2025, requires Python >=3.9)
+redis==6.4.0
+
+# PostgreSQL adapter (Latest: 2.9.11 - Oct 2025)
+psycopg2-binary==2.9.11
+
+# ============================================================================
+# DATA VALIDATION & SETTINGS - Updated October 2025
+# ============================================================================
+
+# Pydantic for data validation (Compatible with semantic-kernel and agentlightning)
+pydantic>=2.11
+pydantic-settings==2.11.0
+
+# ============================================================================
+# HTTP CLIENT & NETWORKING - Updated October 2025
+# ============================================================================
+
+# HTTP client (Latest stable: 0.28.1 - Dec 2024, preparing for 1.0)
+httpx==0.28.1
+
+# Retry logic (Latest: 9.1.2 - Apr 2025)
+tenacity==9.1.2
+
+# Circuit breakers for external services
+pybreaker==1.4.1
+
+# ============================================================================
+# RESILIENCE & OBSERVABILITY - Added October 2025
+# ============================================================================
+
+# OpenTelemetry SDK and OTLP exporter (Compatible versions)
+# Using 1.28+ to match instrumentation packages
+opentelemetry-sdk>=1.28.0,<2.0.0
+opentelemetry-exporter-otlp>=1.28.0,<2.0.0
+
+# FastAPI and HTTPX instrumentation (Latest compatible versions)
+opentelemetry-instrumentation-fastapi>=0.48b0,<1.0.0
+opentelemetry-instrumentation-httpx>=0.48b0,<1.0.0
+
+# ============================================================================
+# SCHEDULING & BACKGROUND JOBS - Updated with Context7
+# ============================================================================
+
+# Advanced Python Scheduler (Latest: 3.10.4)
+apscheduler==3.10.4
+
+# Timezone handling
+pytz==2024.2
+
+# ============================================================================
+# UTILITIES & HELPERS - Updated with Context7
+# ============================================================================
+
+# Environment variables
+python-dotenv==1.0.1
+
+# JSON Web Tokens
+PyJWT==2.10.1
+
+# Logging utilities (Latest: 25.4.0)
+structlog==25.4.0
+
+# Date/time utilities
+python-dateutil==2.9.0.post0
+
+# ============================================================================
+# TESTING FRAMEWORK - Updated with Context7
+# ============================================================================
+
+# Testing framework (Latest: 8.3.4)
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+
+# Load testing (Latest: 2.32.3)
+locust==2.32.3
+
+# HTTP testing
+responses==0.25.3
+
+# ============================================================================
+# DEVELOPMENT TOOLS - Updated with Context7
+# ============================================================================
+
+# Code formatter (Latest: 24.10.0)
+black==24.10.0
+
+# Linting (Latest: 7.1.1)
+flake8==7.1.1
+
+# Type checking (Latest: 1.13.0)
+mypy==1.13.0
+
+# Import sorting
+isort==5.13.2
+
+# ============================================================================
+# SECURITY & VALIDATION - Updated with Context7
+# ============================================================================
+
+# Email validation
+email-validator==2.2.0
+
+# Phone number validation
+phonenumbers==8.13.50
+
+# Password hashing
+bcrypt==4.2.1
+
+# ============================================================================
+# PERFORMANCE & MONITORING - Updated with Context7
+# ============================================================================
+
+# Memory profiling
+memory-profiler==0.61.0
+
+# Process monitoring
+psutil==6.1.0
+
+# Rich console output (Pinned to 13.7.1 for litellm compatibility)
+rich==13.7.1
+
+# ============================================================================
+# DATA PROCESSING - Updated with Context7
+# ============================================================================
+
+# Fast JSON processing
+orjson==3.10.13
+
+# YAML processing
+PyYAML==6.0.2
+
+# ============================================================================
+# COMPATIBILITY & LEGACY - Updated with Context7
+# ============================================================================
+
+# Ensure compatibility with newer Python features (Latest: 4.15.0 - Aug 2025)
+typing-extensions==4.15.0
+
+# Backports for older Python versions
+backports.zoneinfo==0.2.1; python_version<"3.9"
+
