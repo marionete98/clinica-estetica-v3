@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reconquista Relâmpago - Método Chris Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #f44336;
+      --dark: #111;
+      --light: #f5f5f5;
+      --accent: #ffc107;
+      --text: #1c1c1c;
+      --muted: #6b6b6b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #0f0f0f 0%, #1b1b1b 100%);
+      color: var(--light);
+      font-family: 'Open Sans', sans-serif;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 2.5rem 1.5rem 4rem;
+      text-align: center;
+      background: radial-gradient(circle at top, rgba(244, 67, 54, 0.4), rgba(17, 17, 17, 0.95));
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 250px;
+      height: 250px;
+      background: rgba(255, 193, 7, 0.15);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .headline {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .headline span {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--dark);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .headline h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      margin: 1.5rem 0 1rem;
+      color: #fff;
+    }
+
+    .headline p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(135deg, var(--primary), #ff7043);
+      padding: 1.1rem 2.75rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      box-shadow: 0 15px 30px rgba(244, 67, 54, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(244, 67, 54, 0.5);
+    }
+
+    main {
+      background: var(--light);
+      color: var(--text);
+      border-top-left-radius: 40px;
+      border-top-right-radius: 40px;
+      margin-top: -2.5rem;
+      padding: 4rem 1.5rem 0;
+    }
+
+    section {
+      max-width: 1100px;
+      margin: 0 auto 4rem;
+    }
+
+    h2.section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3.25rem);
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    h2.section-title::after {
+      content: "";
+      display: block;
+      width: 70px;
+      height: 4px;
+      background: var(--primary);
+      margin-top: 0.75rem;
+    }
+
+    .author-intro {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2.5rem;
+      align-items: center;
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(17, 17, 17, 0.08);
+    }
+
+    .author-intro blockquote {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .author-intro p {
+      color: var(--muted);
+      margin: 0.75rem 0 0;
+    }
+
+    .core-offer {
+      background: linear-gradient(125deg, rgba(244, 67, 54, 0.1), rgba(255, 193, 7, 0.1));
+      border-radius: 24px;
+      padding: 3rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    .core-offer ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .core-offer li {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      background: #fff;
+      padding: 1.25rem 1.5rem;
+      border-radius: 18px;
+      box-shadow: 0 15px 40px rgba(17, 17, 17, 0.06);
+    }
+
+    .core-offer strong {
+      font-size: 1.05rem;
+      color: var(--dark);
+    }
+
+    .core-offer span.icon {
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #ff7043);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 12px 25px rgba(244, 67, 54, 0.3);
+    }
+
+    .hook-section {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .hook-card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(17, 17, 17, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hook-card::before {
+      content: "";
+      position: absolute;
+      top: -70px;
+      right: -70px;
+      width: 160px;
+      height: 160px;
+      background: rgba(244, 67, 54, 0.12);
+      border-radius: 50%;
+      filter: blur(20px);
+    }
+
+    .hook-card h3 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      color: var(--dark);
+    }
+
+    .hook-card p {
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial {
+      background: #fff;
+      padding: 1.75rem;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(17, 17, 17, 0.08);
+      color: var(--dark);
+    }
+
+    .testimonial strong {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cta-section {
+      text-align: center;
+      background: #111;
+      color: #fff;
+      padding: 3.5rem 1.5rem;
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(17, 17, 17, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(244, 67, 54, 0.45), transparent 70%);
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    .cta-section h2,
+    .cta-section p,
+    .cta-section .cta-button {
+      position: relative;
+      z-index: 1;
+    }
+
+    .bonus-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .bonus-list li {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .guarantee {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      align-items: center;
+    }
+
+    .guarantee-card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(17, 17, 17, 0.08);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2.5rem 1.5rem 3rem;
+      background: #0b0b0b;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.85rem;
+    }
+
+    .mini-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding-top: 2rem;
+      }
+
+      .cta-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="headline">
+      <span>novo método</span>
+      <h1>Como Usei Uma "Carta Secreta" Para Fazer Minha Ex Implorar Por Outra Chance em Apenas 11 Dias</h1>
+      <p>Descubra o roteiro psicológico inspirado nos gatilhos narrativos de Chris Haddad que transforma silêncio em mensagens apaixonadas — mesmo se você já tentou de tudo.</p>
+      <a class="cta-button" href="#cta">Quero Reconquistar Agora</a>
+      <div class="proof" style="margin-top: 1.5rem; color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+        Mais de 17.439 homens já aplicaram esta sequência e viram a ex voltar por vontade própria.
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="author-intro">
+      <div>
+        <h2 class="section-title">Do Fundo do Poço à Mensagem "Sinto Sua Falta"</h2>
+        <p>Eu era o cara bloqueado em todas as redes, ignorado até no aniversário. Foi quando adaptei o modelo de storytelling emocional de Chris Haddad, com gatilhos de vulnerabilidade, tensão e reversão, em mensagens calculadas para mexer com a imaginação dela.</p>
+      </div>
+      <blockquote>
+        "Quando a mensagem certa toca a emoção certa, a resistência dela derrete. O Método Reconquista Relâmpago entrega essa mensagem."<br />
+        <cite style="display:block;margin-top:1rem;color:var(--muted);font-style:normal;">— Felipe D. | Criador do Método</cite>
+      </blockquote>
+    </section>
+
+    <section class="core-offer">
+      <h2 class="section-title">O Que Você Recebe Dentro do Método Reconquista Relâmpago</h2>
+      <ul>
+        <li>
+          <span class="icon">1</span>
+          <div>
+            <strong>Módulo 1 — O Reset Emocional Imediato</strong>
+            <p>Aprenda a virar o jogo saindo do papel de necessitado para o de homem magnético em 24 horas. Inclui scripts de silêncio estratégico para ativar curiosidade.</p>
+          </div>
+        </li>
+        <li>
+          <span class="icon">2</span>
+          <div>
+            <strong>Módulo 2 — Sequência de Mensagens "Carta Secreta"</strong>
+            <p>Copie e cole 9 mensagens com micro histórias que acendem desejo, nostalgia e senso de perda. Inspirado no estilo narrativo de Chris Haddad com copywriting emocional.</p>
+          </div>
+        </li>
+        <li>
+          <span class="icon">3</span>
+          <div>
+            <strong>Módulo 3 — Encontros de Reconexão em 3 Atos</strong>
+            <p>Guia passo a passo para transformar o primeiro encontro pós-reaproximação em um pedido dela por exclusividade, sem pressão nem joguinhos óbvios.</p>
+          </div>
+        </li>
+        <li>
+          <span class="icon">4</span>
+          <div>
+            <strong>Bônus — Biblioteca de Respostas Imediatas</strong>
+            <p>Templates prontos para o que dizer quando ela esfria, testa seus limites ou aparece com um novo ficante. Você sempre saberá a próxima frase.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="section-title">Isso Vai Funcionar Para Você Mesmo Que...</h2>
+      <div class="hook-section">
+        <div class="hook-card">
+          <h3>Ela Disse Que Nunca Mais Voltaria</h3>
+          <p>Mostramos como reprogramar a memória emocional dela com histórias que ela conta para si mesma — técnica "Memória-Roteiro" inspirada nas estruturas de scripts de Haddad.</p>
+        </div>
+        <div class="hook-card">
+          <h3>Você Já Tenha Implorado Várias Vezes</h3>
+          <p>Você reposiciona sua imagem em 3 passos para substituir pena por respeito e desejo, sem desaparecer por semanas.</p>
+        </div>
+        <div class="hook-card">
+          <h3>Ela Está Com Outra Pessoa</h3>
+          <p>Neutralize o rival usando a "Armadilha de Contraste" que aciona gatilhos de comparação e faz ela enxergar porque você é a escolha segura e apaixonante.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Depoimentos de Quem Seguiu o Plano</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial">
+          <p>"Apliquei a mensagem #4 na quinta à noite. Na sexta ela respondeu 'eu estava lembrando da gente ontem'. Domingo já estávamos no mesmo bar que nos conhecemos."</p>
+          <strong>Ricardo M. — Florianópolis</strong>
+        </div>
+        <div class="testimonial">
+          <p>"O roteiro do encontro em 3 atos foi surreal. No carro ela perguntou se poderíamos voltar a tentar. Nem precisei pedir."</p>
+          <strong>Diego S. — São Paulo</strong>
+        </div>
+        <div class="testimonial">
+          <p>"Estava bloqueado há 6 meses. Usei o reset emocional e o gatilho de curiosidade. 48 horas depois ela mesma desbloqueou tudo e me chamou."</p>
+          <strong>Henrique L. — Brasília</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="guarantee">
+      <div class="guarantee-card">
+        <h2 class="section-title">Garantia Blindada 30 Dias</h2>
+        <p>Ou você sente a ex reaproximar naturalmente, ou enviamos todo o seu investimento de volta. Simples assim. Sem letras miúdas. Basta um e-mail e cancelamos na hora.</p>
+      </div>
+      <div>
+        <p>Essa é a segurança de quem confia no processo. A cada semana recebemos relatos de reconciliação e pedidos de casamento ressurgindo graças às histórias e gatilhos emocionais contidos no método.</p>
+        <a class="mini-cta" href="#cta">Ver todas as provas →</a>
+      </div>
+    </section>
+
+    <section id="cta" class="cta-section">
+      <h2>Entre Agora e Comece a Reconquista Ainda Hoje</h2>
+      <p>Oferta Especial de Lançamento: de R$497 por 12x de R$19,78 no cartão ou R$197 à vista.</p>
+      <a class="cta-button" href="https://pay.seuhotmart.com/methodo-reconquista" target="_blank" rel="noopener">Garantir Minha Vaga</a>
+      <ul class="bonus-list">
+        <li>Checklist "Mensagem Certeira" (PDF imprimível)</li>
+        <li>Acesso ao grupo fechado de alunos no Telegram por 90 dias</li>
+        <li>Mentoria ao vivo quinzenal durante 2 meses</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    © 2024 Método Reconquista Relâmpago. Todos os direitos reservados. Este site não faz parte do Facebook™ ou do Facebook Inc. Facebook™ é uma marca registrada da Facebook Inc.
+  </footer>
+</body>
+</html>
